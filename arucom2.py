@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 import cv2.aruco as aruco
-#import arucom1
+import math
 import wget
 import ssl
 import sys
@@ -13,11 +13,18 @@ def calculateCenters (x1,y1,x2,y2):
     c.append((y1+y2)/2)
     return c
 
+def checkdist(x1,y1,x2,y2):
+    d = math.sqrt(((x1-x2)**2)+((y1-y2)**2))
+    if d <= 150:
+        return 1
+    else:
+        return 0
+
 
 
 #-----------------------------------------------
 ssl._create_default_https_context = ssl._create_unverified_context
-wget.download("http://192.168.1.9:8080/shot.jpg?rnd=327657")
+wget.download("http://192.168.1.2:8080/shot.jpg?rnd=189828")
 
 if sys.version_info[0] == 3:
     from urllib.request import urlopen
@@ -33,7 +40,7 @@ else:
 
 while(True):
 
-    cap = cv2.VideoCapture('http://192.168.1.9:8080/shot.jpg?rnd=327657')
+    cap = cv2.VideoCapture('http://192.168.1.2:8080/shot.jpg?rnd=189828')
 
     if cap.isOpened():
         #print("Device Opened\n")
@@ -59,7 +66,7 @@ while(True):
         print(corners)
         print("\n")
 
-        centers = [[],[],[]]
+        centers = [[],[],[],[]]
 
         if type(ids) is np.ndarray:
             #print(ids.size)
@@ -75,7 +82,36 @@ while(True):
         # depends very much upon finding rectangular black blobs
         print(centers)
         gray = aruco.drawDetectedMarkers(gray, corners, borderColor=(255, 0, 0))
-        gray[centers[0][0],centers[0][1]] = [0,0,255]
+
+        #se vede il marker disegna i centri
+
+
+        if centers[0]:
+            center0 = (int(centers[0][0]), int(centers[0][1]))
+            cv2.circle(gray,(center0), 1, (255,0,0), -1)
+            #cv2.line(gray,(int(centers[1][0]), int(centers[1][1])),(center0),(255,0,0),5)
+        if centers[1]:
+            center1 = (int(centers[1][0]), int(centers[1][1]))
+            cv2.circle(gray,(center1), 1, (255,0,0), -1)
+        if centers[2]:
+            center2 = (int(centers[2][0]), int(centers[2][1]))
+            cv2.circle(gray,(center2), 1, (255,0,0), -1)
+
+
+        if centers[0] and centers[1] and centers[2]:
+            if checkdist(centers[0],centers[1],centers[2],centers[3]):
+                f=1;
+                print("yeeee")
+
+            if  checkdist(centers[0],centers[1], centers[4],centers[5], ):
+                g=1;
+                print("super yeee")
+            if (f==1 and g==1):
+                p += 1
+                print(p)
+
+
+    #    gray[centers[0][0],centers[0][1]] = [0,0,255]
 
 
         #print(rejectedImgPoints)
