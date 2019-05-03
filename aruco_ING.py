@@ -6,9 +6,12 @@ import wget
 import ssl
 import sys
 import urllib
+from AppKit import NSSound
+from time import sleep
 
 ipold = 'http://192.168.1.2:8080/shot.jpg?rnd=189828'
 ipnew = 'http://192.168.1.9:8080/shot.jpg?rnd=436060'
+ipxia = 'https://192.168.1.14:8080/shot.jpg?rnd=142522'
 
 def calculateCenters (x1,y1,x2,y2):
     c=[]
@@ -16,7 +19,7 @@ def calculateCenters (x1,y1,x2,y2):
     c.append((y1+y2)/2)
     return c
 
-def checkdist(x1,y1,x2,y2,distmax=20):
+def checkdist(x1,y1,x2,y2,distmax=45):
     d = math.sqrt(((x1-x2)**2)+((y1-y2)**2))
     if d <= distmax:
         return 1
@@ -27,7 +30,7 @@ def checkdist(x1,y1,x2,y2,distmax=20):
 
 #-----------------------------------------------
 ssl._create_default_https_context = ssl._create_unverified_context
-wget.download(ipnew)
+wget.download(ipxia)
 
 if sys.version_info[0] == 3:
     from urllib.request import urlopen
@@ -43,7 +46,7 @@ else:
 
 while(True):
 
-    cap = cv2.VideoCapture(ipnew)
+    cap = cv2.VideoCapture(ipxia)
 
     if cap.isOpened():
         #print("Device Opened\n")
@@ -99,32 +102,7 @@ while(True):
 
         #se vede il marker disegna i centri
 
-
-        # if centers[0]:
-        #     center0 = (int(centers[0][0]), int(centers[0][1]))
-        #     cv2.circle(gray,(center0), 1, (255,0,0), -1)
-        #     #cv2.line(gray,(int(centers[1][0]), int(centers[1][1])),(center0),(255,0,0),5)
-        # if centers[1]:
-        #     center1 = (int(centers[1][0]), int(centers[1][1]))
-        #     cv2.circle(gray,(center1), 1, (255,0,0), -1)
-        # if centers[2]:
-        #     center2 = (int(centers[2][0]), int(centers[2][1]))
-        #     cv2.circle(gray,(center2), 1, (255,0,0), -1)
-        # if centers[3]:
-        #     center0 = (int(centers[3][0]), int(centers[3][1]))
-        #     cv2.circle(gray,(center0), 1, (255,0,0), -1)
-        # if centers[4]:
-        #     center0 = (int(centers[4][0]), int(centers[4][1]))
-        #     cv2.circle(gray,(center0), 1, (255,0,0), -1)
-        # if centers[5]:
-        #     center0 = (int(centers[5][0]), int(centers[5][1]))
-        #     cv2.circle(gray,(center0), 1, (255,0,0), -1)
-        # if centers[6]:
-        #     center0 = (int(centers[6][0]), int(centers[6][1]))
-        #     cv2.circle(gray,(center0), 1, (255,0,0), -1)
-
-        # se vede i marker
-
+        sound = NSSound.alloc()
         #-------------------------------------------------------------
         '''
         THE F***** PEN IS ON THE TABLE
@@ -160,8 +138,16 @@ while(True):
                 #cv2.putText(gray,'yeeee 4-5',(20,100), font, 1,(255,255,255),2,cv2.LINE_AA)
 
         if f==5:
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            cv2.putText(gray,'FUCK YEEAAH',(20,100), font, 1,(255,255,255),2,cv2.LINE_AA)
+            # font = cv2.FONT_HERSHEY_SIMPLEX
+            # cv2.putText(gray,'AFFERMATIVE SENTENCE',(20,100), font, 1,(255,255,255),2,cv2.LINE_AA)
+            sleep(0.2)
+            sound.initWithContentsOfFile_byReference_('/Users/saracolosio/Downloads/sting.wav', True)
+            sound.play()
+
+            # font = cv2.FONT_HERSHEY_TRIPLEX
+            # cv2.putText(gray,'GREAT JOB -- H2O',(20,100), font, 1,(0,255,0),3,cv2.LINE_AA)
+            sleep(sound.duration())
+            sleep(1.5)
 
 #-------------------------------------------------------------------------------------------------
 
@@ -202,9 +188,19 @@ while(True):
                 #cv2.putText(gray,'yeeee 4-5',(20,100), font, 1,(255,255,255),2,cv2.LINE_AA)
         if g==6:
             font = cv2.FONT_HERSHEY_SIMPLEX
-            cv2.putText(gray,'FUCK YEEAAH BITCHEESS',(20,100), font, 1,(255,255,255),2,cv2.LINE_AA)
+            cv2.putText(gray,'QUESTION',(20,100), font, 1,(255,255,255),2,cv2.LINE_AA)
+            sleep(0.2)
+            sound.initWithContentsOfFile_byReference_('/Users/saracolosio/Downloads/sting.wav', True)
+            sound.play()
+
+            # font = cv2.FONT_HERSHEY_TRIPLEX
+            # cv2.putText(gray,'GREAT JOB -- H2O',(20,100), font, 1,(0,255,0),3,cv2.LINE_AA)
+            sleep(sound.duration())
+            sleep(1)
         #print(rejectedImgPoints)
         # Display the resulting frame
+        cv2.namedWindow("frame", cv2.WND_PROP_FULLSCREEN)
+        cv2.setWindowProperty("frame",cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
         cv2.imshow('frame',gray)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
