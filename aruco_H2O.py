@@ -6,10 +6,13 @@ import wget
 import ssl
 import sys
 import urllib
+from AppKit import NSSound
+from time import sleep
 
 
 ipold = 'http://192.168.1.2:8080/shot.jpg?rnd=189828'
 ipnew = 'http://192.168.1.9:8080/shot.jpg?rnd=436060'
+ipxia = 'https://192.168.1.14:8080/shot.jpg?rnd=142522'
 
 def calculateCenters (x1,y1,x2,y2):
     c=[]
@@ -17,7 +20,7 @@ def calculateCenters (x1,y1,x2,y2):
     c.append((y1+y2)/2)
     return c
 
-def checkdist(x1,y1,x2,y2,distmax=100, distmin=0):
+def checkdist(x1,y1,x2,y2,distmax=70, distmin=0):
     d = math.sqrt(((x1-x2)**2)+((y1-y2)**2))
     if d <= distmax and d > distmin:
         return 1
@@ -28,7 +31,7 @@ def checkdist(x1,y1,x2,y2,distmax=100, distmin=0):
 
 #-----------------------------------------------
 ssl._create_default_https_context = ssl._create_unverified_context
-wget.download(ipold)
+#wget.download(ipold)
 
 if sys.version_info[0] == 3:
     from urllib.request import urlopen
@@ -44,7 +47,7 @@ else:
 
 while(True):
 
-    cap = cv2.VideoCapture(ipold)
+    cap = cv2.VideoCapture(ipxia)
 
     if cap.isOpened():
         #print("Device Opened\n")
@@ -111,20 +114,36 @@ while(True):
         #     center2 = (int(centers[2][0]), int(centers[2][1]))
         #     cv2.circle(gray,(center2), 1, (255,0,0), -1)
 
-
+        sound = NSSound.alloc()
 
         if centers[0] and centers[1] and centers[2]:
             if checkdist(centers[0][0], centers[0][1], centers[2][0], centers[2][1]) and checkdist(centers[1][0], centers[1][1], centers[2][0], centers[2][1]):
-                if checkdist(centers[0][0], centers[0][1], centers[1][0], centers[1][1], 170, 130):
-                    font = cv2.FONT_HERSHEY_SIMPLEX
-                    cv2.putText(gray,'yeeee',(20,100), font, 1,(255,255,255),2,cv2.LINE_AA)
+                if checkdist(centers[0][0], centers[0][1], centers[1][0], centers[1][1], 100, 70):
+                    # font = cv2.FONT_HERSHEY_TRIPLEX
+                    # cv2.putText(gray,'GREAT JOB -- H2O',(20,100), font, 1,(0,255,0),3,cv2.LINE_AA)
+                    sleep(0.2)
+                    sound.initWithContentsOfFile_byReference_('/Users/saracolosio/Downloads/sting.wav', True)
+                    sound.play()
+
+
+                    sleep(sound.duration())
+                    sleep(1.5)
+
+
             # if checkdist(centers[2][0], centers[2][1], centers[3][0], centers[3][1]):
             #     font = cv2.FONT_HERSHEY_SIMPLEX
             #     cv2.putText(gray,'noooo',(20,100), font, 1,(255,255,255),2,cv2.LINE_AA)
         if centers[3] and centers[4]:
             if checkdist(centers[3][0], centers[3][1], centers[4][0], centers[4][1], distmax = 80):
-                font = cv2.FONT_HERSHEY_SIMPLEX
-                cv2.putText(gray,'yeeee',(20,100), font, 1,(255,255,255),2,cv2.LINE_AA)
+                # font = cv2.FONT_HERSHEY_SIMPLEX
+                # cv2.putText(gray,'GREAT JOB -- NaCl',(20,100), font, 1,(0,255,0),3,cv2.LINE_AA)
+                sleep(0.2)
+                sound.initWithContentsOfFile_byReference_('/Users/saracolosio/Downloads/sting.wav', True)
+                sound.play()
+
+
+                sleep(sound.duration())
+                sleep(1.5)
 
 
 
@@ -133,6 +152,10 @@ while(True):
 
         #print(rejectedImgPoints)
         # Display the resulting frame
+
+        cv2.namedWindow("frame", cv2.WND_PROP_FULLSCREEN)
+        cv2.setWindowProperty("frame",cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
+
         cv2.imshow('frame',gray)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
