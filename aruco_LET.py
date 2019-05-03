@@ -6,9 +6,12 @@ import wget
 import ssl
 import sys
 import urllib
+from AppKit import NSSound
+from time import sleep
 
 ipold = 'http://192.168.1.2:8080/shot.jpg?rnd=189828'
 ipnew = 'http://192.168.1.9:8080/shot.jpg?rnd=436060'
+ipxia = 'https://192.168.1.14:8080/shot.jpg?rnd=142522'
 
 def calculateCenters (x1,y1,x2,y2):
     c=[]
@@ -16,7 +19,7 @@ def calculateCenters (x1,y1,x2,y2):
     c.append((y1+y2)/2)
     return c
 
-def checkdist(x1,y1,x2,y2,distmax=20):
+def checkdist(x1,y1,x2,y2,distmax=40):
     d = math.sqrt(((x1-x2)**2)+((y1-y2)**2))
     if d <= distmax:
         return 1
@@ -33,7 +36,7 @@ TOPINE
 
 #-----------------------------------------------
 ssl._create_default_https_context = ssl._create_unverified_context
-wget.download(ipnew)
+wget.download(ipxia)
 
 if sys.version_info[0] == 3:
     from urllib.request import urlopen
@@ -49,7 +52,7 @@ else:
 
 while(True):
 
-    cap = cv2.VideoCapture(ipnew)
+    cap = cv2.VideoCapture(ipxia)
 
     if cap.isOpened():
         #print("Device Opened\n")
@@ -102,7 +105,7 @@ while(True):
         # depends very much upon finding rectangular black blobs
         #print(centers)
         gray = aruco.drawDetectedMarkers(gray, corners, borderColor=(255, 0, 0))
-
+        sound = NSSound.alloc()
         #se vede il marker disegna i centri
 
 
@@ -170,8 +173,14 @@ while(True):
                 #cv2.putText(gray,'yeeee 4-5',(20,100), font, 1,(255,255,255),2,cv2.LINE_AA)
 
         if f==5:
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            cv2.putText(gray,'NIPOTEEE',(20,100), font, 1,(255,255,255),2,cv2.LINE_AA)
+            # font = cv2.FONT_HERSHEY_SIMPLEX
+            # cv2.putText(gray,'NIPOTEEE',(20,100), font, 1,(255,255,255),2,cv2.LINE_AA)
+            sleep(0.2)
+            sound.initWithContentsOfFile_byReference_('/Users/saracolosio/Downloads/sting.wav', True)
+            sound.play()
+            sleep(sound.duration())
+            sleep(1.5)
+            #break
 
 #-------------------------------------------------------------------------------------------------
         '''
@@ -207,8 +216,14 @@ while(True):
                 #cv2.putText(gray,'yeeee 4-5',(20,100), font, 1,(255,255,255),2,cv2.LINE_AA)
 
         if g==5:
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            cv2.putText(gray,'PITONEE',(20,100), font, 1,(255,255,255),2,cv2.LINE_AA)
+            # font = cv2.FONT_HERSHEY_SIMPLEX
+            # cv2.putText(gray,'PITONEE',(20,100), font, 1,(0,255,0),3,cv2.LINE_AA)
+            sleep(0.2)
+            sound.initWithContentsOfFile_byReference_('/Users/saracolosio/Downloads/sting.wav', True)
+            sound.play()
+            sleep(sound.duration())
+            sleep(1.5)
+            #break
 
         #-------------------------------------------------------------
         '''
@@ -249,8 +264,14 @@ while(True):
                 #cv2.putText(gray,'yeeee 4-5',(20,100), font, 1,(255,255,255),2,cv2.LINE_AA)
 
         if h==5:
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            cv2.putText(gray,'TOPINEEE',(20,100), font, 1,(255,255,255),2,cv2.LINE_AA)
+            # font = cv2.FONT_HERSHEY_SIMPLEX
+            # cv2.putText(gray,'TOPINEEE',(20,100), font, 1,(0,255,0),3,cv2.LINE_AA)
+            sleep(0.2)
+            sound.initWithContentsOfFile_byReference_('/Users/saracolosio/Downloads/sting.wav', True)
+            sound.play()
+            sleep(sound.duration())
+            sleep(1.5)
+            #break
 
 #-------------------------------------------------------------------------------------------
         '''
@@ -258,6 +279,10 @@ while(True):
         '''
         #print(rejectedImgPoints)
         # Display the resulting frame
+
+        cv2.namedWindow("frame", cv2.WND_PROP_FULLSCREEN)
+        cv2.setWindowProperty("frame",cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
+
         cv2.imshow('frame',gray)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
