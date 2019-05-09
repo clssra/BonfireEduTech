@@ -12,6 +12,9 @@ from time import sleep
 ipold = 'http://192.168.1.2:8080/shot.jpg?rnd=189828'
 ipnew = 'http://192.168.1.9:8080/shot.jpg?rnd=436060'
 ipxia = 'https://192.168.1.14:8080/shot.jpg?rnd=142522'
+ipfab = 'https://172.20.10.13:8080/shot.jpg?rnd=245139'
+ipvale = 'https://192.168.43.140:8080/shot.jpg?rnd=94568'
+ipnico = 'https://192.168.43.140:8080/shot.jpg?rnd=565089'
 
 def calculateCenters (x1,y1,x2,y2):
     c=[]
@@ -30,7 +33,7 @@ def checkdist(x1,y1,x2,y2,distmax=45):
 
 #-----------------------------------------------
 ssl._create_default_https_context = ssl._create_unverified_context
-wget.download(ipxia)
+#wget.download(ipvale)
 
 if sys.version_info[0] == 3:
     from urllib.request import urlopen
@@ -46,7 +49,7 @@ else:
 
 while(True):
 
-    cap = cv2.VideoCapture(ipxia)
+    cap = cv2.VideoCapture(ipfab)
 
     if cap.isOpened():
         #print("Device Opened\n")
@@ -140,7 +143,7 @@ while(True):
         if f==5:
             # font = cv2.FONT_HERSHEY_SIMPLEX
             # cv2.putText(gray,'AFFERMATIVE SENTENCE',(20,100), font, 1,(255,255,255),2,cv2.LINE_AA)
-            sleep(0.2)
+            #sleep(0.2)
             sound.initWithContentsOfFile_byReference_('/Users/saracolosio/Downloads/sting.wav', True)
             sound.play()
 
@@ -189,7 +192,7 @@ while(True):
         if g==6:
             font = cv2.FONT_HERSHEY_SIMPLEX
             cv2.putText(gray,'QUESTION',(20,100), font, 1,(255,255,255),2,cv2.LINE_AA)
-            sleep(0.2)
+            #sleep(0.2)
             sound.initWithContentsOfFile_byReference_('/Users/saracolosio/Downloads/sting.wav', True)
             sound.play()
 
